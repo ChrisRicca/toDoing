@@ -1,3 +1,14 @@
+body {
+    padding:30px;
+}
+
+input[type=text] {
+    width:500px;
+}
 .work_chunk.ended a {
     display:none;
+}
+
+.work_chunk.canceled {
+    color:#999;
 }

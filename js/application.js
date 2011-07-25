@@ -6,25 +6,29 @@ _.templateSettings = {
 $(function(){
     var WorkChunk = Backbone.Model.extend({
         defaults: {
-            complete: false,
+            completed: null,
             started_at: null,
             ended_at: null,
             description:"do some stuff..."
         },
         initialize: function() {
-            _.bindAll(this,'start_now','complete_now','elapsed_time_display')
+            _.bindAll(this,'start_now','end_now','elapsed_time_display')
             this.start_now();
         },
         start_now: function() {
             var now = new Date();
             this.save({started_at:now.getTime()})
         },
-        complete_now: function() {
+        end_now: function(completed) {
+            if (_(completed).isUndefined())
+                var completed = true;
+                
             if (!this.get('ended_at')) {
                 var now = new Date();
-                this.save({ended_at:now.getTime(),complete:true})
+                this.save({ended_at:now.getTime(),completed:completed})
             }
         },
+        
         elapsed_time_display: function() {
             if (this.get('ended_at')) {
                 var elapsed_milliseconds = this.get('ended_at') - this.get('started_at')
@@ -39,6 +43,10 @@ $(function(){
         },
         is_ended: function(){
             return !!this.get('ended_at')
+        },
+        
+        is_completed: function() {
+            return this.is_ended() && this.get('completed')
         }
     });
     
@@ -61,7 +69,8 @@ $(function(){
         className: 'work_chunk',
         
         events: {
-            'click .complete':'handleCompleted'
+            'click .complete':'handleCompleted',
+            'click .cancel':'handleCanceled'
         },
         
         template: _.template($('#work_chunk_template').html()),
@@ -73,7 +82,12 @@ $(function(){
         
         handleCompleted: function(e) {
             e.preventDefault();
-            this.model.complete_now();
+            this.model.end_now();
+        },
+        
+        handleCanceled: function(e) {
+            e.preventDefault();
+            this.model.end_now(false);
         },
         
         render: function() {
@@ -85,9 +99,9 @@ $(function(){
             if (this.model.is_ended())
                 $(this.el).addClass('ended');
             
-            if (this.model.is_ended())
-                $(this.el).addClass('ended');
-            
+            if (this.model.is_ended() && !this.model.is_completed())
+                $(this.el).addClass('canceled')
+                
             this.setDisplayTimer();
             
             return this;
