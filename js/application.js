@@ -6,23 +6,39 @@ _.templateSettings = {
 $(function(){
     var WorkChunk = Backbone.Model.extend({
         defaults: {
-            finished: false,
+            complete: false,
             started_at: null,
-            display_time: '00:00',
             ended_at: null,
             description:"do some stuff..."
         },
         initialize: function() {
-            _.bindAll(this,'start_now','finish_now')
+            _.bindAll(this,'start_now','complete_now','elapsed_time_display')
             this.start_now();
         },
         start_now: function() {
             var now = new Date();
             this.save({started_at:now.getTime()})
         },
-        finish_now: function() {
-            var now = new Date();
-            this.save({ended_at:now.getTime(),finished:true})
+        complete_now: function() {
+            if (!this.get('ended_at')) {
+                var now = new Date();
+                this.save({ended_at:now.getTime(),complete:true})
+            }
+        },
+        elapsed_time_display: function() {
+            if (this.get('ended_at')) {
+                var elapsed_milliseconds = this.get('ended_at') - this.get('started_at')
+            } else {
+                var elapsed_milliseconds = (new Date()).getTime() - this.get('started_at')
+            }
+            
+            var minutes = parseInt(elapsed_milliseconds / (1000*60))
+            var seconds = parseInt((elapsed_milliseconds / 1000) - (minutes * 60))
+            
+            return (minutes < 10 ? "0" + minutes.toString() : minutes.toString()) +":"+(seconds < 10 ? "0" + seconds.toString() : seconds.toString())
+        },
+        is_ended: function(){
+            return !!this.get('ended_at')
         }
     });
     
@@ -42,29 +58,55 @@ $(function(){
     
     var WorkChunkView = Backbone.View.extend({
         tagName: "li",
-        class_name: 'work_chunk',
+        className: 'work_chunk',
         
         events: {
-            'click .finish':'handleFinished'
+            'click .complete':'handleCompleted'
         },
         
         template: _.template($('#work_chunk_template').html()),
         
         initialize: function() {
-            _.bindAll(this, 'render')
+            _.bindAll(this, 'render','updateElapsedTimeDisplay')
             this.model.bind('change', this.render)
-            // this.model.view = this;
         },
         
-        handleFinished: function(e) {
+        handleCompleted: function(e) {
             e.preventDefault();
-            this.model.finish_now();
+            this.model.complete_now();
         },
         
         render: function() {
-            $(this.el).html(this.template(this.model.toJSON()));
+            var json = this.model.toJSON();
+            json.elapsed_time = this.model.elapsed_time_display();
+            
+            $(this.el).html(this.template(json));
+            
+            if (this.model.is_ended())
+                $(this.el).addClass('ended');
+            
+            if (this.model.is_ended())
+                $(this.el).addClass('ended');
+            
+            this.setDisplayTimer();
+            
             return this;
+        },
+        
+        setDisplayTimer: function() {
+            if(this.timer)
+                clearInterval(this.timer);
+            
+            if(!(this.model.is_ended())) {
+                this.timer = setInterval(this.updateElapsedTimeDisplay, 1000);
+            }
+        },
+        
+        updateElapsedTimeDisplay: function() {
+            this.$('.time_elapsed').html(this.model.elapsed_time_display)
         }
+        
+        
     });
     
     var AppView = Backbone.View.extend({
