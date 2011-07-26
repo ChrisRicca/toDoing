@@ -125,19 +125,21 @@ $(function(){
     
     var AppView = Backbone.View.extend({
         initialize: function() {
-            _.bindAll(this, 'addWorkChunk','toggleNewWorkForm')
+            _.bindAll(this, 'addWorkChunk','toggleNewWorkForm','completeOnEnter')
             
             WorkChunks.bind('add', this.addWorkChunk)
             WorkChunks.bind('add', this.toggleNewWorkForm)
             WorkChunks.bind('change', this.toggleNewWorkForm)
             
+            $(document)
             this.resetForm();
         },
     
         el: $('body'),
     
         events: {
-           'submit #new_work_chunk':'addOnFormSubmit'
+           'submit #new_work_chunk':'addOnFormSubmit',
+           'keypress':'completeOnEnter'
         },
     
         addOnFormSubmit: function(e) {
@@ -160,6 +162,12 @@ $(function(){
               $('form#new_work_chunk').hide().find('input[type=text]').val('').blur();
           } else {
               this.resetForm();
+          }
+        },
+        completeOnEnter: function(e) {
+        console.log("completeOnEnter");
+          if(this.hasActiveWork() && e.keyCode == 13) {
+            WorkChunks.detect(function(chunk){return !chunk.is_ended()}).end_now()
           }
         },
         resetForm: function() {
