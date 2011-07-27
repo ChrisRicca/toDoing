@@ -13,7 +13,9 @@ $(function(){
         },
         initialize: function() {
             _.bindAll(this,'start_now','end_now','elapsed_time_display')
-            this.start_now();
+            
+            if (this.isNew())
+                this.start_now();
         },
         start_now: function() {
             var now = new Date();
@@ -26,6 +28,8 @@ $(function(){
             if (!this.get('ended_at')) {
                 var now = new Date();
                 this.save({ended_at:now.getTime(),completed:completed})
+                console.log('END NOW')
+                
             }
         },
         
@@ -61,7 +65,7 @@ $(function(){
             return chunk.get('started_at');
         }
     });
-    var WorkChunks = new WorkChunkList;
+    window.WorkChunks = new WorkChunkList;
     
     
     var WorkChunkView = Backbone.View.extend({
@@ -76,8 +80,9 @@ $(function(){
         template: _.template($('#work_chunk_template').html()),
         
         initialize: function() {
-            _.bindAll(this, 'render','updateElapsedTimeDisplay')
+            _.bindAll(this, 'render','remove','updateElapsedTimeDisplay')
             this.model.bind('change', this.render)
+            this.model.bind('destroy', this.remove)
         },
         
         handleCompleted: function(e) {
@@ -107,6 +112,10 @@ $(function(){
             return this;
         },
         
+        remove: function() {
+          $(this.el).remove();  
+        },
+        
         setDisplayTimer: function() {
             if(this.timer)
                 clearInterval(this.timer);
@@ -125,33 +134,42 @@ $(function(){
     
     var AppView = Backbone.View.extend({
         initialize: function() {
-            _.bindAll(this, 'addWorkChunk','toggleNewWorkForm','completeOnEnter')
+            _.bindAll(this, 'addWorkChunk','reset','toggleNewWorkForm','completeOnEnter','clickClearAll')
             
             WorkChunks.bind('add', this.addWorkChunk)
-            WorkChunks.bind('add', this.toggleNewWorkForm)
-            WorkChunks.bind('change', this.toggleNewWorkForm)
+            WorkChunks.bind('all', this.toggleNewWorkForm)            
             
-            $(document)
-            this.resetForm();
+            this.reset();
         },
     
         el: $('body'),
     
         events: {
            'submit #new_work_chunk':'addOnFormSubmit',
-           'keypress':'completeOnEnter'
+           'keypress':'completeOnEnter',
+           'click #clear_all':'clickClearAll'
         },
     
         addOnFormSubmit: function(e) {
             e.preventDefault();
             
             var description = $('#new_work_chunk input[type=text]').val();
-            WorkChunks.create({description:description})            
+            WorkChunks.create({description:description})
         },
         
         addWorkChunk: function(work_chunk) {
             var view = new WorkChunkView({model: work_chunk})
             this.$("#work_chunks").prepend(view.render().el)
+        },
+        
+        reset: function() {
+            this.$("#work_chunks").html("");
+            WorkChunks.fetch();
+            var self = this;
+            WorkChunks.each(function(chunk){
+                self.addWorkChunk(chunk);
+            });
+            this.toggleNewWorkForm();
         },
         
         hasActiveWork: function() {
@@ -172,6 +190,12 @@ $(function(){
         },
         resetForm: function() {
             $('form#new_work_chunk').show().find('input[type=text]').val('').focus();
+        },
+        clickClearAll: function(e) {
+            e.preventDefault();
+            
+            while(WorkChunks.length > 0)
+                WorkChunks.each(function(chunk){chunk.destroy()});            
         }
     });
     app_view = new AppView;
