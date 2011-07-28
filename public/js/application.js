@@ -134,7 +134,7 @@ $(function(){
             if(window.webkitNotifications && window.webkitNotifications.checkPermission() == 0) {
                 // check for alert
                 
-                var interval_duration = (1000*60*10) // 10 mins
+                var interval_duration = (1000*60*5) // 5 mins
                 var last_alert_interval = parseInt(this.last_alert / interval_duration)
 
                 var next_alert = (last_alert_interval * interval_duration) + interval_duration
