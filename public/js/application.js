@@ -130,8 +130,10 @@ $(function(){
         updateElapsedTimeDisplay: function() {
             this.$('.time_elapsed').html(this.model.elapsed_time_display)
             
+            // alerts
             if(window.webkitNotifications && window.webkitNotifications.checkPermission() == 0) {
                 // check for alert
+                
                 var interval_duration = (1000*60*10) // 10 mins
                 var last_alert_interval = parseInt(this.last_alert / interval_duration)
 
@@ -140,7 +142,7 @@ $(function(){
                     
                     this.last_alert = next_alert;
                     
-                    var n = window.webkitNotifications.createNotification(null, this.model.elapsed_time_display(), this.model.get('description'))
+                    var n = window.webkitNotifications.createNotification('bull.gif', this.model.elapsed_time_display(), this.model.get('description'))
                     n.ondisplay = function() {
                         setTimeout(function(){ n.cancel() },1000*20) // 20 seconds
                     }
