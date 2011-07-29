@@ -135,12 +135,12 @@ $(function(){
                 // check for alert
                 
                 var interval_duration = (1000*60*5) // 5 mins
+                
                 var last_alert_interval = parseInt(this.last_alert / interval_duration)
 
                 var next_alert = (last_alert_interval * interval_duration) + interval_duration
                 if(this.model.elapsed_time() > next_alert) {
-                    
-                    this.last_alert = next_alert;
+                    this.last_alert = parseInt(this.model.elapsed_time() / interval_duration) * interval_duration;
                     
                     var n = window.webkitNotifications.createNotification('bull.gif', this.model.elapsed_time_display(), this.model.get('description'))
                     n.ondisplay = function() {
