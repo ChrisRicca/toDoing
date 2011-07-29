@@ -131,7 +131,7 @@ $(function(){
             this.$('.time_elapsed').html(this.model.elapsed_time_display)
             
             // alerts
-            if(window.webkitNotifications && window.webkitNotifications.checkPermission() == 0) {
+            if(window.webkitNotifications && window.webkitNotifications.checkPermission() == 0 && !this.model.is_ended()) {
                 // check for alert
                 
                 var interval_duration = (1000*60*5) // 5 mins
