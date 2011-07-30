@@ -1,7 +1,8 @@
 body {
   font-family: Helvetica;
-  background-color:#F0FCED;
+  background-color:#222222;
   padding-top:50px;
+  color:#EEE;
 }
 
 #middle_column {
@@ -75,19 +76,22 @@ float:left;
   margin-left:10px;
 }
 
-.work_chunk .cancel {
+.work_chunk .cancel, #clear_all {
     background-color: #D1D1D1;
     border:1px solid #A5A5A5;
-    color:#A5A5A5;
+    color:#555;
+}
+
+.work_chunk .cancel:hover, #clear_all:hover {
+    background-color: #E98D7B;
+    border:1px solid #F37B63;
+    color:#FFF;
 }
 
 #clear_all {
     position:fixed;
     bottom:5px;
     right:5px;
-    background-color: #D1D1D1;
-    border:1px solid #A5A5A5;
-    color:#555;
     padding:3px;
     text-decoration:none;
 }
