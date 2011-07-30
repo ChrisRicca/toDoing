@@ -16,7 +16,7 @@ get '/app.appcache' do
 end
 
 get '/test' do
-  ENV
+  ENV['COMMIT_HASH']
 end
 
 configure do
