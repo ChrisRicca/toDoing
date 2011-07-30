@@ -7,18 +7,11 @@ get '/' do
   erb :app
 end
 
+
+
 get '/app.appcache' do
-  # cache a bit
-  content_type :appcache
+  content_type 'text/cache-manifest'
   headers['Cache-Control'] = "public, max-age=1"
-  @gitstamp = ENV['COMMIT_HASH'] || `git show-ref | grep refs/heads/master`.gsub('refs/heads/master','')
+  @gitstamp = ENV['COMMIT_HASH'] || rand(1000000000).to_s(16) # never cache in development
   erb :appcache
-end
-
-get '/test' do
-  ENV['COMMIT_HASH']
-end
-
-configure do
-  mime_type :appcache, 'text/cache-manifest'
 end
