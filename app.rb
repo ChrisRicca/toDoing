@@ -15,6 +15,10 @@ get '/app.appcache' do
   erb :appcache
 end
 
+get '/test' do
+  ENV
+end
+
 configure do
   mime_type :appcache, 'text/cache-manifest'
 end
