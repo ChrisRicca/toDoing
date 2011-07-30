@@ -10,7 +10,7 @@ end
 get '/app.appcache' do
   # cache a bit
   content_type :appcache
-  headers['Cache-Control'] = "public, max-age=1000"
+  headers['Cache-Control'] = "public, max-age=1"
   @gitstamp = ENV['COMMIT_HASH'] || `git show-ref | grep refs/heads/master`.gsub('refs/heads/master','')
   erb :appcache
 end
