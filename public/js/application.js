@@ -14,6 +14,8 @@ $(function(){
         initialize: function() {
             _.bindAll(this,'start_now','end_now','elapsed_time_display','elapsed_time')
             
+            this.target_duration = (1000*60*30) // 30 minutes
+            
             if (this.isNew())
                 this.start_now();
         },
@@ -40,10 +42,15 @@ $(function(){
         elapsed_time_display: function() {
             var elapsed_milliseconds = this.elapsed_time();
             
-            var minutes = parseInt(elapsed_milliseconds / (1000*60))
-            var seconds = parseInt((elapsed_milliseconds / 1000) - (minutes * 60))
+            var time_to_display = this.is_late() || this.is_ended() ? elapsed_milliseconds : this.target_duration - elapsed_milliseconds
+            
+            var minutes = parseInt(time_to_display / (1000*60))
+            var seconds = parseInt((time_to_display / 1000) - (minutes * 60))
             
             return (minutes < 10 ? "0" + minutes.toString() : minutes.toString()) +":"+(seconds < 10 ? "0" + seconds.toString() : seconds.toString())
+        },
+        is_late: function(){
+          return this.elapsed_time() > this.target_duration
         },
         is_ended: function(){
             return !!this.get('ended_at')
@@ -102,7 +109,7 @@ $(function(){
             json.elapsed_time = this.model.elapsed_time_display();
             
             $(this.el).html(this.template(json));
-            
+                
             if (this.model.is_ended())
                 $(this.el).addClass('ended');
             
