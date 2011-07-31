@@ -129,6 +129,7 @@ $(function(){
         
         updateElapsedTimeDisplay: function() {
             this.$('.time_elapsed').html(this.model.elapsed_time_display)
+            $(document).find('title').html(this.model.elapsed_time_display() + " " + this.model.get('description'));
             
             // alerts
             if(window.webkitNotifications && window.webkitNotifications.checkPermission() == 0 && !this.model.is_ended()) {
@@ -216,6 +217,7 @@ $(function(){
         },
         resetForm: function() {
             $('form#new_work_chunk').show().find('input[type=text]').val('').focus();
+            $(document).find('title').html("toDoing.org - get something done.");
         },
         clickClearAll: function(e) {
             e.preventDefault();
