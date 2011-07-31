@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sinatra'
 
 require 'erb'
+require 'pp'
 
 get '/' do
   erb :app
@@ -13,10 +14,14 @@ get '/app.appcache' do
   erb :appcache
 end
 
-
-
 helpers do
   def version
     @version ||= ENV['COMMIT_HASH'] || rand(1000000000).to_s(16) # never cache in development
+  end
+end
+
+before do
+  if ENV['RACK_ENV'] == :production
+    redirect "http://todoing.org#{request.path}" if request.host != 'todoing.org'
   end
 end
