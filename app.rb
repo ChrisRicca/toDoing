@@ -21,9 +21,9 @@ helpers do
 end
 
 before do
-  puts ENV['RACK_ENV'].class
   if ENV['RACK_ENV'] == 'production'
     puts "INSIDE IF"
+    puts request.host
     redirect "http://todoing.org#{request.path}" if request.host != 'todoing.org'
   end
 end
