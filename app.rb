@@ -22,8 +22,6 @@ end
 
 before do
   if ENV['RACK_ENV'] == 'production'
-    puts "INSIDE IF"
-    puts request.host
     redirect "http://todoing.org#{request.path}" if request.host != 'todoing.org'
   end
 end
