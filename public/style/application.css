@@ -60,7 +60,11 @@ float:left;
 }
 
 .work_chunk.canceled {
-    color:#999;
+    color:#777;
+}
+
+.work_chunk.canceled .description {
+    text-decoration:line-through;
 }
 
 .work_chunk .complete, .work_chunk .cancel {
