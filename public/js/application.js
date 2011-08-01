@@ -47,7 +47,7 @@ $(function(){
             var minutes = parseInt(time_to_display / (1000*60))
             var seconds = parseInt((time_to_display / 1000) - (minutes * 60))
             
-            return (minutes < 10 ? "0" + minutes.toString() : minutes.toString()) +":"+(seconds < 10 ? "0" + seconds.toString() : seconds.toString())
+            return (this.is_late() || this.is_ended() ? "" : "-") + (minutes < 10 ? "0" + minutes.toString() : minutes.toString()) +":"+(seconds < 10 ? "0" + seconds.toString() : seconds.toString())
         },
         is_late: function(){
           return this.elapsed_time() > this.target_duration
