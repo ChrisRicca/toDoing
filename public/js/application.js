@@ -42,7 +42,8 @@ $(function(){
         elapsed_time_display: function() {
             var elapsed_milliseconds = this.elapsed_time();
             
-            var time_to_display = this.is_late() || this.is_ended() ? elapsed_milliseconds : this.target_duration - elapsed_milliseconds
+            var time_to_display = this.is_late() || this.is_ended() ? elapsed_milliseconds : (this.target_duration + 1000) - elapsed_milliseconds
+            
             
             var minutes = parseInt(time_to_display / (1000*60))
             var seconds = parseInt((time_to_display / 1000) - (minutes * 60))
