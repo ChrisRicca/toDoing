@@ -63,10 +63,6 @@ float:left;
     color:#777;
 }
 
-.work_chunk.canceled .description {
-    text-decoration:line-through;
-}
-
 .work_chunk .complete, .work_chunk .cancel {
   background-color: #8DDB45;
   border:1px solid #6CBE35;
