@@ -50,6 +50,29 @@ $(function(){
             
             return (this.is_late() || this.is_ended() ? "" : "-") + (minutes < 10 ? "0" + minutes.toString() : minutes.toString()) +":"+(seconds < 10 ? "0" + seconds.toString() : seconds.toString())
         },
+        point_value: function() {
+          var time_in_mins = parseInt(this.elapsed_time() / 1000)
+          
+          if(time_in_mins < 5)
+            return 0;
+          if(time_in_mins < 5)
+              return 0;
+              
+          //     5 mins = 1 point
+          //     additional point each 5 mins
+          // 
+          //     5 - 1  
+          //     10 - 3    
+          //     15 - 6    
+          //     20 - 10   
+          //     25 - 15   
+          //     -30
+          //     30+ 10
+          //     45+ 5
+          // 
+          //     incomplete = 2 if over 10
+              
+        },
         is_late: function(){
           return this.elapsed_time() > this.target_duration
         },
