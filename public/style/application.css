@@ -122,3 +122,15 @@ float:left;
     color:#FFF;
     text-decoration:none;
 }
+
+#total {
+  position:fixed;
+  bottom:0;
+  padding:5px;
+  width:800px;
+  left:50%;
+  margin-left:-490px;
+  text-align:right;
+  font-size:30px;
+  background-color:#222;
+}

@@ -52,9 +52,12 @@ $(function(){
         },
         point_value: function() {
         
+          if(!this.is_ended())
+            return 0;
+          
           var time_in_mins = this.elapsed_time() / (1000*60);
 
-          if(this.is_ended() && !this.is_completed()) {
+          if(!this.is_completed()) {
             return (time_in_mins > 10) ? 2 : 0;
           }
           
@@ -194,9 +197,10 @@ $(function(){
     
     var AppView = Backbone.View.extend({
         initialize: function() {
-            _.bindAll(this, 'addWorkChunk','reset','toggleNewWorkForm','completeOnEnter','clickClearAll','handleEnableNotifications')
+            _.bindAll(this, 'addWorkChunk','reset','toggleNewWorkForm','completeOnEnter','clickClearAll','handleEnableNotifications','calculateTotal')
             
             WorkChunks.bind('add', this.addWorkChunk)
+            WorkChunks.bind('all', this.calculateTotal)
             WorkChunks.bind('all', this.toggleNewWorkForm)            
             
             if (window.webkitNotifications && window.webkitNotifications.checkPermission() != 0)
@@ -268,6 +272,14 @@ $(function(){
                 window.webkitNotifications.requestPermission();
                 $('#notifications').hide();
             }
+        },
+        calculateTotal: function() {
+            var total = WorkChunks.reduce(function(memo, chunk){
+                return memo + chunk.point_value();
+            },0)
+            
+            $("#total").toggle(total > 0).find('span').html(total);
+                
         }
     });
     app_view = new AppView;
