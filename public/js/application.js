@@ -51,26 +51,30 @@ $(function(){
             return (this.is_late() || this.is_ended() ? "" : "-") + (minutes < 10 ? "0" + minutes.toString() : minutes.toString()) +":"+(seconds < 10 ? "0" + seconds.toString() : seconds.toString())
         },
         point_value: function() {
-          var time_in_mins = parseInt(this.elapsed_time() / 1000)
+        
+          var time_in_mins = this.elapsed_time() / (1000*60);
+
+          if(this.is_ended() && !this.is_completed()) {
+            return (time_in_mins > 10) ? 2 : 0;
+          }
           
           if(time_in_mins < 5)
             return 0;
-          if(time_in_mins < 5)
-              return 0;
-              
-          //     5 mins = 1 point
-          //     additional point each 5 mins
-          // 
-          //     5 - 1  
-          //     10 - 3    
-          //     15 - 6    
-          //     20 - 10   
-          //     25 - 15   
-          //     -30
-          //     30+ 10
-          //     45+ 5
-          // 
-          //     incomplete = 2 if over 10
+          if(time_in_mins < 10)
+            return 1;
+          if(time_in_mins < 15)
+            return 3;
+          if(time_in_mins < 20)
+            return 6;
+          if(time_in_mins < 25)
+            return 10;
+          if(time_in_mins < 30)
+            return 15;
+          if(time_in_mins < 45)
+            return 10;
+          
+          // over 45 minutes
+          return 5;
               
         },
         is_late: function(){
@@ -131,6 +135,7 @@ $(function(){
         render: function() {
             var json = this.model.toJSON();
             json.elapsed_time = this.model.elapsed_time_display();
+            json.point_value = this.model.point_value();
             
             $(this.el).html(this.template(json));
                 

@@ -59,6 +59,16 @@ float:left;
     display:none;
 }
 
+.work_chunk .points {
+  display:none;
+  text-align:right;
+}
+.work_chunk.ended .points {
+  display:inline;
+}
+
+
+
 .work_chunk.canceled {
     color:#777;
 }
@@ -73,7 +83,7 @@ float:left;
   float:left;
   color:#FFF;
   text-decoration:none;
-  margin-left:10px;
+  margin-right:10px;
 }
 
 .work_chunk .cancel, #clear_all {
