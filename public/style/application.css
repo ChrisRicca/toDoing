@@ -59,6 +59,16 @@ float:left;
     display:none;
 }
 
+.work_chunk .points {
+  display:none;
+  text-align:right;
+}
+.work_chunk.ended .points {
+  display:inline;
+}
+
+
+
 .work_chunk.canceled {
     color:#777;
 }
@@ -73,7 +83,7 @@ float:left;
   float:left;
   color:#FFF;
   text-decoration:none;
-  margin-left:10px;
+  margin-right:10px;
 }
 
 .work_chunk .cancel, #clear_all {
@@ -111,4 +121,16 @@ float:left;
     border:1px solid #6CBE35;
     color:#FFF;
     text-decoration:none;
+}
+
+#total {
+  position:fixed;
+  bottom:0;
+  padding:5px;
+  width:800px;
+  left:50%;
+  margin-left:-490px;
+  text-align:right;
+  font-size:30px;
+  background-color:#222;
 }

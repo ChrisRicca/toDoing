@@ -50,6 +50,36 @@ $(function(){
             
             return (this.is_late() || this.is_ended() ? "" : "-") + (minutes < 10 ? "0" + minutes.toString() : minutes.toString()) +":"+(seconds < 10 ? "0" + seconds.toString() : seconds.toString())
         },
+        point_value: function() {
+        
+          if(!this.is_ended())
+            return 0;
+          
+          var time_in_mins = this.elapsed_time() / (1000*60);
+
+          if(!this.is_completed()) {
+            return (time_in_mins > 10) ? 2 : 0;
+          }
+          
+          if(time_in_mins < 5)
+            return 0;
+          if(time_in_mins < 10)
+            return 1;
+          if(time_in_mins < 15)
+            return 3;
+          if(time_in_mins < 20)
+            return 6;
+          if(time_in_mins < 25)
+            return 10;
+          if(time_in_mins < 30)
+            return 15;
+          if(time_in_mins < 45)
+            return 10;
+          
+          // over 45 minutes
+          return 5;
+              
+        },
         is_late: function(){
           return this.elapsed_time() > this.target_duration
         },
@@ -108,6 +138,7 @@ $(function(){
         render: function() {
             var json = this.model.toJSON();
             json.elapsed_time = this.model.elapsed_time_display();
+            json.point_value = this.model.point_value();
             
             $(this.el).html(this.template(json));
                 
@@ -166,9 +197,10 @@ $(function(){
     
     var AppView = Backbone.View.extend({
         initialize: function() {
-            _.bindAll(this, 'addWorkChunk','reset','toggleNewWorkForm','completeOnEnter','clickClearAll','handleEnableNotifications')
+            _.bindAll(this, 'addWorkChunk','reset','toggleNewWorkForm','completeOnEnter','clickClearAll','handleEnableNotifications','calculateTotal')
             
             WorkChunks.bind('add', this.addWorkChunk)
+            WorkChunks.bind('all', this.calculateTotal)
             WorkChunks.bind('all', this.toggleNewWorkForm)            
             
             if (window.webkitNotifications && window.webkitNotifications.checkPermission() != 0)
@@ -240,6 +272,14 @@ $(function(){
                 window.webkitNotifications.requestPermission();
                 $('#notifications').hide();
             }
+        },
+        calculateTotal: function() {
+            var total = WorkChunks.reduce(function(memo, chunk){
+                return memo + chunk.point_value();
+            },0)
+            
+            $("#total").toggle(total > 0).find('span').html(total);
+                
         }
     });
     app_view = new AppView;
