@@ -182,7 +182,7 @@ $(function(){
                 if(this.model.elapsed_time() > next_alert) {
                     this.last_alert = parseInt(this.model.elapsed_time() / interval_duration) * interval_duration;
                     
-                    var n = window.webkitNotifications.createNotification('bull.gif', this.model.elapsed_time_display(), this.model.get('description'))
+                    var n = window.webkitNotifications.createNotification('logo.png', this.model.elapsed_time_display(), this.model.get('description'))
                     n.ondisplay = function() {
                         setTimeout(function(){ n.cancel() },1000*20) // 20 seconds
                     }
